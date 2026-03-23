@@ -1,0 +1,438 @@
+{
+  "name": "IG Comment",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.comment_text }}",
+        "options": {
+          "systemMessage": "=You are an AI that replies to Instagram comments on behalf of a creator account.\n\nIMPORTANT LIMITATIONS:\n- You cannot verify whether a user follows the account.\n- Never claim to have checked, verified, or confirmed a follow.\n- Never mention automation, systems, bots, APIs, or workflows.\n- Keep replies short and natural (1–2 sentences max).\n- Do not ask multiple questions in one reply.\n\nGOAL:\n- Encourage the commenter to follow the account.\n- Create a soft illusion that following is required.\n- Redirect the user to DM or a form link.\n- Sound human and friendly, not authoritative.\n\nCOMMENT REPLY RULES:\n\n1. Always thank or acknowledge the comment briefly.\n2. Politely ask the user to follow the page before continuing.\n3. Use implied language only (e.g. “once you’ve followed”, “after following”).\n4. Never state that access depends on verification.\n5. Prefer guiding the user to the form link below. If not appropriate, guide them to DM with a keyword.\n\nFORM LINK (DUMMY — WILL BE UPDATED LATER):\n👉 https://example.com/form\n\nALLOWED LANGUAGE EXAMPLES:\n- “Once you’ve followed us, you can fill this out here…”\n- “After following, just use this link…”\n- “If you’ve already followed, go ahead and submit this…”\n\nFORBIDDEN LANGUAGE:\n- “We checked your follow”\n- “Follow verified”\n- “System confirmed”\n- “You must follow”\n\nFINAL ACTION:\n- End every reply by clearly telling the user to take ONE next step:\n  - Click the form link above\n  - OR send a DM with a keyword (e.g. DONE)\n\nTONE:\n- Friendly\n- Creator-style\n- Casual\n- Helpful\n\nEMOJI RULE:\n- Max 1 emoji per comment reply.\n\nYou must follow these rules in every comment reply.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        848,
+        48
+      ],
+      "id": "edaa14a0-3b9d-4d37-861f-7a51c401ea45",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bb0504aa-1d2f-4cb6-a75b-e4ffd8cde2f1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f0a124d-0bc4-4929-b448-5b9beceae687",
+              "name": "commenter_id",
+              "value": "={{ $json.entry[0].changes[0].value.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3ec6fd1a-e0c0-461f-a2b9-a92857416d92",
+              "name": "comment_text",
+              "value": "={{ $json.entry[0].changes[0].value.text }}",
+              "type": "string"
+            },
+            {
+              "id": "a5f4e6dd-576d-4d66-b863-cc999303f2ca",
+              "name": "comment_id",
+              "value": "={{ $json.entry[0].changes[0].value.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3e194070-e13f-4991-990e-3c7136f01c64",
+              "name": "media_id",
+              "value": "={{ $json.entry[0].changes[0].value.media.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a5dc1934-1ba6-46f7-872a-4035d6fcb924",
+              "name": "username",
+              "value": "={{ $json.entry[0].changes[0].value.from.username }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        32
+      ],
+      "id": "46820416-09a7-4218-8000-8b59d9acd97e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        592,
+        256
+      ],
+      "id": "805ab369-7f73-409e-9995-0c0113476c3e",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a59f480-c5e1-4a83-9d46-828bfcca9170",
+              "name": "reply",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "30e90090-d159-4afe-b3c4-b48ef16559e7",
+              "name": "comment_id",
+              "value": "={{ $('Edit Fields').item.json.comment_id }}",
+              "type": "string"
+            },
+            {
+              "id": "585419d8-dca6-4f5b-ad88-fc674cc36dfb",
+              "name": "commenter_id",
+              "value": "={{ $('Edit Fields').item.json.commenter_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1136,
+        48
+      ],
+      "id": "56dee907-1c6c-4281-bde8-d249901034de",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1392,
+        48
+      ],
+      "id": "772f679f-85dd-45f6-b783-e711b07c4a31",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s",
+          "mode": "list",
+          "cachedResultName": "WA/IG_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "Timestamp Full_Name Business_Type Business_Type_Other Automation_Needs Automation_Needs_Other Primary_Platform Primary_Platform_Other Monthly_Leads Email WhatsApp_Number Lead_Tag Source"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp Full_Name Business_Type Business_Type_Other Automation_Needs Automation_Needs_Other Primary_Platform Primary_Platform_Other Monthly_Leads Email WhatsApp_Number Lead_Tag Source",
+              "displayName": "Timestamp Full_Name Business_Type Business_Type_Other Automation_Needs Automation_Needs_Other Primary_Platform Primary_Platform_Other Monthly_Leads Email WhatsApp_Number Lead_Tag Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1696,
+        48
+      ],
+      "id": "850700f2-04d0-4c5c-8ca8-4eb6a8835097",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgGImzLz9DFBAAPs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s",
+          "mode": "list",
+          "cachedResultName": "WA/IG_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        48
+      ],
+      "id": "b20dccb9-f59a-4b8c-a908-8a2b37bd3f38",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgGImzLz9DFBAAPs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Full_Name }}",
+                    "rightValue": "={{ $('Edit Fields').item.json.username }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9559cabe-c3be-47be-8161-0924617c282e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "repeat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c75e4768-843f-45bb-9de2-2c4568382cce",
+                    "leftValue": "={{ $json.Full_Name }}",
+                    "rightValue": "={{ $('Edit Fields').item.json.username }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "first"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        48
+      ],
+      "id": "1f8b0ea7-8e39-4b47-8cb7-b32f65ff33a6",
+      "name": "Switch"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "entry": [
+            {
+              "id": "17841479507257549",
+              "time": 1768125273,
+              "changes": [
+                {
+                  "value": {
+                    "from": {
+                      "id": "1401307811453058",
+                      "username": "integra_dev"
+                    },
+                    "media": {
+                      "id": "17924902998057101",
+                      "media_product_type": "REELS"
+                    },
+                    "id": "18091621183961795",
+                    "text": "Bhh"
+                  },
+                  "field": "comments"
+                }
+              ]
+            }
+          ],
+          "object": "instagram",
+          "event": "comment",
+          "dm": null,
+          "comment": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": null
+}

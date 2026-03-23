@@ -1,0 +1,659 @@
+{
+  "name": "IG DM Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.dm }}",
+        "options": {
+          "systemMessage": "Identity:-\nYou are **Ai Automation Agency**, name is Integra Automation, you are not anyone assistant you are Integra Automation  so start greeting like this example:Hey there! i m Integra Automation\n that builds:\n\n* AI Agents\n* WhatsApp Automation Bots\n* Instagram DM Bots\n* Workflow & Business Automations\n* Custom AI-powered Systems\n\nYou represent a **friendly, professional, and high-trust automation brand** focused on real business outcomes.\n\n---\n\n### **Primary Objectives**\n\n1. Greet users warmly (only once per conversation).\n2. Understand the user’s business, goals, and automation pain points.\n3. Clearly recommend the most suitable automation solution.\n4. Qualify the lead by collecting essential details.\n5. Guide the user to the next step (demo, eligibility check, or WhatsApp).\n6. Send all collected lead data to the **Integra Leads Sheet**.\n\n---\n\n### **Tone & Style**\n\n* Friendly, helpful, premium\n* Clear, concise, and confident\n* Never pushy or salesy\n* Avoid technical jargon unless the user asks\n* Short, Instagram-friendly messages\n* Ask questions naturally, **one at a time**\n\n---\n\n### **Response Guidelines**\n\n* Ask smart qualifying questions based on context\n* Explain solutions in simple, outcome-focused language\n* Always guide the conversation forward\n* Offer a clear next step once interest is shown\n* Follow up **only once** if the user goes silent\n* Stay consistently on-brand as Integra Automation\n\n---\n\n### **Qualifying Questions (Use Selectively)**\n\nAsk only what is needed, depending on the conversation:\n\n* “What type of business do you run?”\n* “What are you trying to automate right now?”\n* “Are you looking for an AI bot or a workflow automation?”\n* “Roughly how many leads or customers do you handle each month?”\n* “Do you want this on Instagram, WhatsApp, or your website?”\n\n❗ Never ask the same question twice.\n\n---\n\n### **When the User Shows Clear Interest**\n\nImmediately move to lead collection. Collect **only what’s necessary**:\n\n* Name (optional)\n* Business type\n* Primary automation need\n* Tools currently used (Instagram, WhatsApp, CRM, Google Sheets, etc.)\n* Preferred contact method (WhatsApp or email)\n\nSend all collected data to the **Integra Leads Sheet**.\n\n---\n\n### **Services You Can Mention (Keep Short)**\n\n* AI Instagram DM Bot\n* AI WhatsApp Agent\n* Lead Qualification Automation\n* CRM & Google Sheets Workflows\n* Appointment Booking Automation\n* Custom AI Agents (Sales, Support, Research)\n\n---\n\n### **Call-to-Action (Use ONE at a time)**\n\nAfter understanding the user, choose the most relevant CTA:\n\n* “I can share a quick demo — want to see it?”\n* “Want me to check if your business is a good fit for automation?”\n* “Should I book a free 10-minute strategy call for you?”\n\n---\n\n### **Strict Rules**\n\n* Never provide long or highly technical explanations\n* Keep answers short wherever possible\n* Never ask more than one question at a time\n* Never loop or repeat qualifying questions\n* If business type and automation need are known, **do not ask again**\n* Move forward to lead collection → CTA immediately\n* Follow up only once if the user stops replying\n* Always maintain the Integra Automation brand voice\n\n---\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        704,
+        32
+      ],
+      "id": "30414282-ab50-410d-aa56-862a80822b5a",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        592,
+        224
+      ],
+      "id": "3f6a842e-350c-4a2b-a16a-0c6c1962e893",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v24.0/{{ $json.recipient_id }}/messages\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer IGAARBYJZB0bn5BZAFo0QVRxa3B5dkhLd2tsa0xRQlE5UjNoLVQ1OFE2WDItQmtvSW1EcEhpOTBHZAVQyVmozOU14WnYxUU5XbkJKU0huQjFYN1dWQWJLQ1lmaFluWDdyTWtUeTBxV0tVR2FLS2hoSE9sVmtYMXlpdzg3bnhTemNtcwZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $json.sender_id }}\"\n  },\n  \"message\": {\n    \"text\": \"{{ $json.text_message }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1248,
+        32
+      ],
+      "id": "3eba9109-da83-4d23-9cc5-a96ab4a832ad",
+      "name": "HTTP Request",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b06b426b-0aae-42de-8780-96771a51e998",
+              "name": "recipient_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.entry[0].messaging[0].recipient.id }}",
+              "type": "string"
+            },
+            {
+              "id": "5f5f275b-ae40-4e0c-8e96-2890f7c5bd78",
+              "name": "text_message",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "396ee2e0-80bf-4d1b-a792-40ddf682a73c",
+              "name": "sender_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        32
+      ],
+      "id": "f06f62c1-c0ab-43be-8196-ce91f384f3a3",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to save lead information to the Google Sheet. Call this when you have collected: business type, automation need, name (optional), current tools, or contact info. Pass the data as parameters to this tool.",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s",
+          "mode": "list",
+          "cachedResultName": "WA/IG_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hTEi6a8fhBm-MqDnFK1kZW4JhEDyJD5dOfb538OQ48s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "IG handle",
+              "displayName": "IG handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Price Agreed",
+              "displayName": "Price Agreed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Paid (Y/N)",
+              "displayName": "Paid (Y/N)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        992,
+        272
+      ],
+      "id": "2d06aa80-5472-4f1b-82bb-cf52820c05cd",
+      "name": "Leads"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = ($json.message || \"\").toLowerCase();\n\nlet intent = \"general\";\n\nif (text.includes(\"demo\")) {\n  intent = \"demo\";\n}\nelse if (\n  text.includes(\"price\") ||\n  text.includes(\"pricing\") ||\n  text.includes(\"cost\")\n) {\n  intent = \"pricing\";\n}\nelse if (\n  text.includes(\"automation\") ||\n  text.includes(\"automate\") ||\n  text.includes(\"automated\")\n) {\n  intent = \"automation\";\n}\nelse if (\n  text.includes(\"whatsapp\") ||\n  text.includes(\" wa \")\n) {\n  intent = \"whatsapp\";\n}\nelse if (\n  text.includes(\"instagram\") ||\n  text.includes(\" ig \")\n) {\n  intent = \"instagram\";\n}\n\nreturn [{ intent, text }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        256
+      ],
+      "id": "7cad0a3e-7580-49a4-a424-e740411f521e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "demo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "773567b3-d2cd-488e-afa0-acd64bbee387"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d957eb31-e21c-4725-8579-614bfce54d17",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "pricing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f31ae7fa-69f7-4eae-b867-60f007bf8029",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "automation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4bbaa47d-25d0-4a85-b3b5-88d9320306ad",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "whatsapp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "80776e5f-380c-433c-9aa5-f1c0c5cb53da",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "instagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        256
+      ],
+      "id": "a57e7b5f-5a26-45ac-a133-369d748520a3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        336
+      ],
+      "id": "61d90aa3-e749-4198-9246-2667d721c194",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ce8ac4ec-206e-4310-8f87-83983b320c38",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "182e002a-f24a-4073-bb9f-9a9981eef55f",
+              "name": "dm",
+              "value": "={{ $json.raw.entry[0].messaging[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "a5dc1934-1ba6-46f7-872a-4035d6fcb924",
+              "name": "username",
+              "value": "={{ $json.raw.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            },
+            {
+              "id": "8ecf67af-a81f-457a-b239-e6849a63c052",
+              "name": "sender id",
+              "value": "={{$json.sender_id}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        32
+      ],
+      "id": "84a727d7-df57-4d8e-aeab-994caf8cd331",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d101251e-c2b2-4a52-9239-767b8a8fd390",
+              "leftValue": "={{ $json.dm }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        496,
+        32
+      ],
+      "id": "a445589b-2c86-4e7d-9574-454eecd4c016",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        784,
+        256
+      ],
+      "id": "f85d6b34-1f93-446c-bc49-9f835a2ab7d1",
+      "name": "Simple Memory",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leads": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "object": "instagram",
+          "entry": [
+            {
+              "time": 1767945981612,
+              "id": "17841479507257549",
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1401307811453058"
+                  },
+                  "recipient": {
+                    "id": "17841479507257549"
+                  },
+                  "timestamp": 1767945980963,
+                  "message": {
+                    "mid": "aWdfZAG1faXRlbToxOklHTWVzc2FnZAUlEOjE3ODQxNDc5NTA3MjU3NTQ5OjM0MDI4MjM2Njg0MTcxMDMwMTI0NDI3NjAxODkwODg1NzczNzIxODozMjYxMjg0NzA0Njk4NDgxMTAxNDYzOTgxNDY3MzY5NDcyMAZDZD",
+                    "text": "Hey"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": "dm",
+          "dm": "Hey",
+          "comment": null
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": null
+}

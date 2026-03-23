@@ -1,0 +1,140 @@
+{
+  "name": "Dynamic IG DM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "instagram-dm-agent",
+        "options": {}
+      },
+      "name": "Webhook Config",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "63cdbef9-19b7-4e96-984d-f4a380489153",
+      "webhookId": "f967d8d0-cc6e-465e-9dcc-5dd3e2f99808"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "user_id",
+              "value": "={{$json.user_id}}"
+            },
+            {
+              "name": "ig_access_token",
+              "value": "={{$json.ig_access_token}}"
+            },
+            {
+              "name": "reply_prompt",
+              "value": "={{$json.reply_prompt}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set User Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        256,
+        0
+      ],
+      "id": "881f49f8-dc8b-4374-90e2-bed67e532e27"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Instagram DM Trigger",
+      "type": "n8n-nodes-base.facebookTrigger",
+      "typeVersion": 1,
+      "position": [
+        512,
+        0
+      ],
+      "id": "1386345a-9d5d-4bf6-97ee-5b9da2180206",
+      "webhookId": "4b0c36c5-8f6d-4f46-8651-cf53464497da"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {},
+        "requestOptions": {}
+      },
+      "name": "AI Reply Generator",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        752,
+        0
+      ],
+      "id": "02559765-2adf-416c-a5c1-6d8f36258d4f"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{$json.entry[0].messaging[0].sender.id}}/messages",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\"messaging_type\":\"RESPONSE\",\"text\":\"{{$json.choices[0].message.content}}\"}"
+      },
+      "name": "Send DM Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        0
+      ],
+      "id": "46ca68c0-b693-45f4-a9c0-b9429ec8287c"
+    }
+  ],
+  "connections": {
+    "Webhook Config": {
+      "main": [
+        [
+          {
+            "node": "Set User Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram DM Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Reply Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Reply Generator": {
+      "main": [
+        [
+          {
+            "node": "Send DM Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": null
+}

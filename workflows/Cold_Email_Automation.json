@@ -1,0 +1,613 @@
+{
+  "name": "Cold Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "sendTo": "={{ $('If1').item.json.email }}",
+        "subject": "={{ $json.output.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.output.body }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Integra Automation"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2624,
+        272
+      ],
+      "id": "e1d51116-a21b-4fa2-a290-841d52a0bcfa",
+      "name": "Send a message",
+      "webhookId": "5ff97873-8ee2-48f1-b2f5-95d04c45c685",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pg3aB2VvZ2BJ3Q4g",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"subject\":\"subject\",\n  \"body\":\"body\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2432,
+        480
+      ],
+      "id": "910139b8-adf7-4386-b8d2-f631c0c5352e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1OLC5WZNvv_cKJWe14Ib_pjY50nUoS0r8ijSMVbo-Ip0",
+          "mode": "list",
+          "cachedResultName": "sales_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OLC5WZNvv_cKJWe14Ib_pjY50nUoS0r8ijSMVbo-Ip0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sPUVGE8JuA3MPBVArBmRYKJNhP8m3q8UeCYIxnf225w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('If1').item.json.row_number }}",
+            "status(email sent / reply back)": "Email Sent"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_full",
+              "displayName": "name_full",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "scraped date",
+              "displayName": "scraped date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_name",
+              "displayName": "company_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "conversion_stage",
+              "displayName": "conversion_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status(email sent / reply back)",
+              "displayName": "status(email sent / reply back)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2640,
+        624
+      ],
+      "id": "a0833865-f0cb-4cca-a040-12c3675fde4d",
+      "name": "Update row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgGImzLz9DFBAAPs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2928,
+        688
+      ],
+      "id": "861371cd-4480-4bd6-be79-c46fc493c566",
+      "name": "Wait",
+      "webhookId": "6d1fa068-30d6-4ca1-9e01-2d7c54360493"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-32b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        448
+      ],
+      "id": "b3ab25f1-4c25-456d-86dd-7c4fdf34e654",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "IU9VTwbEfGUdDOV1",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1296,
+        240
+      ],
+      "id": "39ee2c05-97e6-4b58-9cc3-957a1cc84f3e",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2dde024a-ec7c-43f7-8c13-7bd360f333bf",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6cefbc5b-720e-45dc-9331-54cd04138910",
+              "leftValue": "={{ $json['status(email sent / reply back)'] }}",
+              "rightValue": "Email Sent",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        208
+      ],
+      "id": "bcd32151-d5c6-451f-a3bc-2f8fcbc53cda",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate email for this lead:\nlead_id:  {{ $json.lead_id }}\nname: {{ $json.greeting }}\njob_title:{{ $json.job_title }}\ncompany: {{ $json.company_name }}\ncity:{{ $json.city }}\ncountry:{{ $json.country }}\ncategory:{{ $json.category }}\ndescription:{{ $json.description }}\nemail: {{ $json.email_clean }}\nsource:{{ $json.source_page_url }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=SYSTEM MESSAGE — AI Cold Email Agent(Dynamic, Any Category)\n\nYou are an AI Cold Email Agent specialized in selling:\n- AI Agents\n- AI Automation solutions\n- Modern & high-converting websites\n- Any additional digital or technical offer the user provides\n\nYour mission is to generate short, punchy, high-converting cold emails for ANY industry or category.\n\nCORE BEHAVIOR\n1. Adapt dynamically to the user’s niche, offer, tone, target audience, and pain points.\n2. Automatically adjust language for any industry (medical, real estate, SaaS, ecom, agencies, contractors, local businesses, etc.).\n3. Focus on starting conversations, booking calls, or getting replies.\n\nWRITING PRINCIPLES\n- 4–7 sentences max.\n- Casual, modern, human tone.\n- Pain-point first → solution → differentiator → soft CTA.\n- No fluff, no jargon, no long explanations.\n- Value-focused instead of feature-focused.\n\nEMAIL STRUCTURE\n1. Relevant opener (reference their business, challenge, or category problem).\n2. Present the pain point and connect it to the offer (AI agent, automation, website, etc.).\n3. Short differentiator (e.g., time savings, reduced workload, better conversions, 24/7 operation).\n4. Light CTA (“Worth a quick look?”, “Want a quick example?”, etc.).\n5. Simple signature.\n\nINPUTS EXPECTED\nUse if provided:\n- Industry / business type\n- Prospect role\n- Pain point\n- Offer type (AI agent, automation, website, etc.)\n- Proof, pricing, or metrics\n- Desired tone\n\nIf not provided, infer logical industry pain points.\n\nWHAT YOU NEVER DO\n- No long emails\n- No hype language\n- No unrealistic claims\n- No corporate buzzwords\n- No technical jargon\n\nOUTPUT FORMAT\nAlways return:\n1. Subject line\n2. One cold email (4–7 sentences)\n3. Variations only if asked\n\nadd signature best,Integra Automation\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2272,
+        240
+      ],
+      "id": "380ee506-7b44-4fc2-9f64-108a43b4a32a",
+      "name": "AI Agent1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -112
+      ],
+      "id": "5d4e127c-994e-4607-b850-d2848fc47565",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b3e87505-ed9f-45fc-a0c1-63506444ec86",
+              "name": "greeting",
+              "value": "={{ \n  $json.name_full && $json.name_full.toLowerCase() === 'general inquiry'\n    ? 'there'\n    : ($json.name_full ? 'Hi ' + $json.name_full + ',' : ' there,')\n}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1648,
+        304
+      ],
+      "id": "f089db8c-56e0-489e-8acd-83235e48b284",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1VZyE1Zw5PDST_kvIe0xvedJyJtQHXhiSkpE4veMpA6g",
+          "mode": "list",
+          "cachedResultName": "sales_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VZyE1Zw5PDST_kvIe0xvedJyJtQHXhiSkpE4veMpA6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VZyE1Zw5PDST_kvIe0xvedJyJtQHXhiSkpE4veMpA6g/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        128,
+        272
+      ],
+      "id": "ec346dc9-6c54-485a-859e-14d6b59ca28f",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "IltQRXrayzQwSVie",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        112
+      ],
+      "id": "16aaa7b2-8031-43c9-a95d-cabb8affa011",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1OLC5WZNvv_cKJWe14Ib_pjY50nUoS0r8ijSMVbo-Ip0",
+          "mode": "list",
+          "cachedResultName": "sales_leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OLC5WZNvv_cKJWe14Ib_pjY50nUoS0r8ijSMVbo-Ip0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OLC5WZNvv_cKJWe14Ib_pjY50nUoS0r8ijSMVbo-Ip0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        176
+      ],
+      "id": "829b9844-a4a3-466f-ba62-0bcbdab5aa6b",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgGImzLz9DFBAAPs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

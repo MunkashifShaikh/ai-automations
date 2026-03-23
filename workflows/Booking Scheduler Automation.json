@@ -1,0 +1,274 @@
+{
+  "name": "Booking Scheduler Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "booking-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "d6eea663-8d1b-431e-8269-1b5878f1233f",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -64
+      ],
+      "webhookId": "4a49f6e0-d180-4ca6-8f48-17185fdb6b6f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.event}}",
+              "value2": "booking_created"
+            }
+          ]
+        }
+      },
+      "id": "6292f810-4231-4fea-97fa-486f2bcb3ced",
+      "name": "Is Booking Created?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.event}}",
+              "value2": "booking_cancelled"
+            }
+          ]
+        }
+      },
+      "id": "f9f107b0-8c57-4cb8-881f-7a9c0533f7d8",
+      "name": "Is Booking Cancelled?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.event}}",
+              "value2": "booking_reminder"
+            }
+          ]
+        }
+      },
+      "id": "f8294e2c-289e-453c-85cc-f1203cb719ac",
+      "name": "Is Reminder?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@yourdomain.com",
+        "toEmail": "={{$json.body.client_email}}",
+        "subject": "✅ Booking Confirmed – {{$json.body.service_name}}",
+        "text": "Hi {{$json.body.client_name}},\n\nYour booking is confirmed!\n\nService: {{$json.body.service_name}}\nDate: {{$json.body.date}}\nTime: {{$json.body.time}}\nHost: {{$json.body.host_name}}\n\nSee you soon!",
+        "options": {}
+      },
+      "id": "95689e25-cf74-4c7a-be62-7914a9c668f2",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -160
+      ],
+      "webhookId": "9b9f9b97-77a2-4cfe-8c14-e2763d09ccea"
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "start": "={{$json.body.date}}T{{$json.body.time}}:00",
+        "end": "={{$json.body.date}}T{{$json.body.end_time}}:00",
+        "additionalFields": {}
+      },
+      "id": "5d30127a-d4a2-4d7c-a1f2-4dbc49561842",
+      "name": "Add to Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        0,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@yourdomain.com",
+        "toEmail": "={{$json.body.client_email}}",
+        "subject": "❌ Booking Cancelled – {{$json.body.service_name}}",
+        "text": "Hi {{$json.body.client_name}},\n\nYour booking has been cancelled.\n\nService: {{$json.body.service_name}}\nDate: {{$json.body.date}}\nTime: {{$json.body.time}}\n\nFeel free to rebook anytime.",
+        "options": {}
+      },
+      "id": "751fd210-dad7-42b6-b682-c473965faaac",
+      "name": "Send Cancellation Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        16,
+        176
+      ],
+      "webhookId": "d43ba31e-f5d1-41f4-bd2e-333d04807050"
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@yourdomain.com",
+        "toEmail": "={{$json.body.client_email}}",
+        "subject": "⏰ Reminder – Your appointment is tomorrow!",
+        "text": "Hi {{$json.body.client_name}},\n\nJust a reminder that you have an appointment tomorrow!\n\nService: {{$json.body.service_name}}\nDate: {{$json.body.date}}\nTime: {{$json.body.time}}\nHost: {{$json.body.host_name}}\n\nSee you soon!",
+        "options": {}
+      },
+      "id": "3e294de3-a957-4543-9847-05ff42d98db4",
+      "name": "Send Reminder Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        16,
+        336
+      ],
+      "webhookId": "d12c36df-3136-4a18-8364-fdef5e82bdd6"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"success\", \"message\": \"Webhook processed successfully\"}",
+        "options": {}
+      },
+      "id": "f6021252-d2b7-4b02-b0ea-4a69e26a87b7",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        480,
+        128
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is Booking Created?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Booking Cancelled?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Reminder?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Booking Created?": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Add to Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Booking Cancelled?": {
+      "main": [
+        [
+          {
+            "node": "Send Cancellation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Reminder?": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cancellation Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Reminder Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2081baed-07be-4105-9021-fc19e343ef8e",
+  "meta": {
+    "instanceId": "630f6cdb97885d64a70b4b84d517b29b77e6ec40dc3d098f3e620d9ed6ccb921"
+  },
+  "id": "eXJmfKSL54fh1DmJ",
+  "tags": []
+}
